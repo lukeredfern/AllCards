@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"cd all-cards-backend && node server.js\" \"cd all-cards-client && npm start\""
+    "start": "concurrently \"cd all-cards-backend && npm start\" \"cd all-cards-client && npm start\""
   },
   "dependencies": {
     "concurrently": "^4.0.1"

@@ -11,6 +11,7 @@ import passport from "passport";
 import bluebird from "bluebird";
 import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 
+
 const MongoStore = mongo(session);
 
 // Controllers (route handlers)
@@ -25,6 +26,7 @@ import * as passportConfig from "./config/passport";
 
 // Create Express server
 const app = express();
+const cors = require('cors')
 
 // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
@@ -38,12 +40,13 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
 });
 
 // Express configuration
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.PORT || 3001);
 app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "pug");
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors())
 app.use(session({
     resave: true,
     saveUninitialized: true,
@@ -102,11 +105,9 @@ app.post("/account/password", passportConfig.isAuthenticated, userController.pos
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
 
-/**
- * API examples routes.
- */
-app.get("/api", apiController.getApi);
-app.get("/api/facebook", passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
+app.get("/game/:gameId", apiController.game);
+app.get("/game/:gameId/state", apiController.getState);
+app.post("/game/:gameId/move", apiController.move);
 
 /**
  * OAuth authentication routes. (Sign in)
